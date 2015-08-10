@@ -5,10 +5,6 @@ output: html_document
 
 ### Loading and preprocessing the data
 
-```{r,}
-getwd()
-```
-
 ```{r,echo=TRUE}
 library(graphics)
 library(ggplot2)
