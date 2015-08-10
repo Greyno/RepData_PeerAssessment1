@@ -1,0 +1,130 @@
+---
+title: "Reproducible Research: Peer Assignment #1"
+output: html_document
+---
+
+### Loading and preprocessing the data
+
+```{r}
+getwd()
+library(graphics)
+library(ggplot2)
+```
+
+Load in the dataset
+
+```{r, echo=TRUE}
+activity <- read.csv("activity.csv")
+summary(activity) #2304 NA values
+head(activity)
+```
+Check to see if the data need to be converted/processed
+```{r, echo=TRUE}
+class(activity$date) #The dates are a factor
+class(activity$interval) #The intervals are an integer
+class(activity$steps) #The steps are an integer
+```
+Convert the date factors to dates and the intervals to factors.
+```{r, echo=TRUE}
+activity$date <- as.Date(activity$date, format = "%Y-%m-%d") 
+#Convert the intervals to factors
+activity$interval <- as.factor(activity$interval)
+class(activity$date) #The dates are now a date
+class(activity$interval) #The intervals are now in a factor format
+```
+
+###What is mean total number of steps taken per day?
+We will solve this by calculating the total number of steps taken per day. To do this, first sort the data into each day (there are two months of data, taken in Oct and Nov 2012). Use the aggregrate function with the 'sum' function to find the total number of steps each day.
+```{r, echo=TRUE}
+activity_by_day<-aggregate(activity["steps"], by=activity["date"], FUN=sum)
+head(activity_by_day)
+str(activity_by_day)
+summary(activity_by_day) #Min 41 steps, max 21194 steps, 8 NAs
+```
+Create a histogram (using the graphics package) of the total number of steps taken each day. Look at a histogram of the frequency by steps. Calculate the mean and the median of the number of steps/day (ignoring the NA values). 
+```{r, echo=TRUE}
+hist(activity_by_day$steps, main=paste("Histogram of Numer of Steps/day (NA values removed)"), xlab="Number of steps per day", ylab="Frequency of steps")
+#Put (report) these values into a sentence when I do the RMarkdown
+#mean (NAs removed):10766.19
+mean_steps<-format(round(mean_steps<-mean(activity_by_day$steps, na.rm=TRUE)), scientific=FALSE) 
+#median (NAs removed):10765
+median_steps<-format(round(median(activity_by_day$steps, na.rm=TRUE)), scientific=FALSE)
+```
+The mean number of steps is `r mean_steps` and the median number of steps is `r median_steps`.
+
+###What is the average daily activity pattern?
+Sort the data into the 5-minute intervals (x-axis) and the average number of steps taken, averaged across all days (y-axis). For the plot, convert the intervals from a factor to an integer else 'type=l' will be ignored since the plot function will default to plot.factor, which does not take a type. 
+```{r echo=TRUE}
+activity_by_interval<-aggregate(activity["steps"], by=activity["interval"], FUN=mean, na.rm=TRUE) 
+plot(as.integer(activity_by_interval$interval), activity_by_interval$steps, type="l", ylab="Number of steps", xlab="Interval", main="Avg activity pattern")
+head(activity_by_interval)
+```
+
+```{r, echo=TRUE}
+max_step <- round(max(activity_by_interval$steps), digits=2) #The max step is 206
+max_interval <-round(which.max(activity_by_interval$steps))
+head(max_interval) #The max steps occurs at the 104th interval value (need to convert back to time interval)
+```
+On average, across all the days in the dataset, the 5-minute interval that contains the maximum number of steps (`r max_step`) occurs at interval `r max_interval` of the data.
+
+###Imputing missing values
+The strategy being used here to fill in the missing NA data values in the original dataset is to first make a copy of hte original dataset then replace the NA values with the activity_by_interval data (i.e. using the average daily step data found in the previous section).
+```{r echo=TRUE}
+missing_values <- round(sum(is.na(activity$steps))) #There are 2304 NAs in dataset
+head(activity) #This is the original dataset
+replaced_data<-activity #Make a copy of the original dataset
+#Replace the NAs in the original data with the activity_by_interval data
+for (i in 1:nrow(replaced_data)) {
+    if (is.na(replaced_data$steps[i])) {
+        replaced_data$steps[i] <- activity_by_interval[which(replaced_data$interval[i] == activity_by_interval$interval), ]$steps
+    }
+}
+head(replaced_data)
+```
+Check that there are no missing values in this newly created dataset.
+```{r echo=TRUE}
+missing_values <- round(sum(is.na(replaced_data$steps))) #There are no NAs in this new dataset
+```
+The number of missing values in this new dataset is `r missing_values`.
+Now to plot this new dataset with the missing values replaced.
+``` {r echo=TRUE}
+replaced_data_activity_by_day<-aggregate(replaced_data["steps"], by=replaced_data["date"], FUN=sum)
+hist(replaced_data_activity_by_day$steps, main=paste("Histogram of Numer of Steps/day (missing values replaced)"), xlab="Number of steps per day", ylab="Frequency of steps")
+```
+
+``` {r echo=TRUE}
+#Disable scientific notation output in RMarkdown using format(function, scientific=FALSE)
+mean_steps_replaced<-format(round(mean_steps_replaced<-mean(replaced_data_activity_by_day$steps), digits=2), scientific=FALSE) 
+#median (NAs replaced): 10766
+median_steps_replaced<-format(round(median(replaced_data_activity_by_day$steps), digits=2), scientific=FALSE)
+```
+With the NA values replaced, the mean number of steps per day is `r mean_steps_replaced` and the median of the number of steps per day is `r median_steps_replaced`. These values are not very different from the mean (`r mean_steps`) and the median (`r median_steps`) number of steps per day in the data with the NA values.
+
+###Are there differences in activity patterns between weekdays and weekends?
+Use the weekdays() function to create a column with the days of the week appended to the dataset.
+``` {r, echo=TRUE}
+#Add a column of data with weekday names
+replaced_data_activity_by_day$weekday<-weekdays(replaced_data_activity_by_day$date)
+#Make a copy of this dataset
+data_by_days<-replaced_data_activity_by_day
+```
+Now split the data into week days and weekend days
+```{r, echo=TRUE}
+weekend_data <- subset(test, weekday %in% c("Saturday","Sunday"))
+weekday_data <- subset(test, !weekday %in% c("Saturday","Sunday"))
+#Replace "Sat" and "Sun" with "weekend"
+weekend_data$weekday <- ifelse(weekend_data$weekday > "Friday","weekend", "")
+#Replace "Mon" etc with "weekday"
+weekday_data$weekday <- ifelse(weekday_data$weekday >="Monday","weekday", "weekday")
+```
+Recombine the weekend and weekday data using 'rbind' (this appends weekdays to the end of the file) 
+```{r, echo=TRUE}
+data_by_days_final<-rbind(weekend_data, weekday_data)
+head(data_by_days_final)
+```
+Plot the final dataset by weekend and weekday
+```{r, echo=TRUE}
+ggplot(data_by_days_final, aes(x=date, y=steps)) + geom_line(color="black") + facet_wrap(~ weekday, nrow=2, ncol=1) + labs(x="Interval", y="Number of steps") + theme_bw()
+```
+
+Overall, the number of steps taken during the weekday is generally at a higher level than the numebr of steps taken during the weekend.
