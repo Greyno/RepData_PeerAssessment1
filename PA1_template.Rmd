@@ -5,8 +5,11 @@ output: html_document
 
 ### Loading and preprocessing the data
 
-```{r, echo=TRUE}
+```{r,}
 getwd()
+```
+
+```{r,echo=TRUE}
 library(graphics)
 library(ggplot2)
 ```

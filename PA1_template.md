@@ -14,6 +14,7 @@ getwd()
 ## [1] "/Users/gamrey/Documents/Coursera work files/Reproducible Research/PeerAssessment1"
 ```
 
+
 ```r
 library(graphics)
 library(ggplot2)
@@ -145,7 +146,7 @@ Create a histogram (using the graphics package) of the total number of steps tak
 hist(activity_by_day$steps, main=paste("Histogram of Numer of Steps/day (NA values removed)"), xlab="Number of steps per day", ylab="Frequency of steps")
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
 
 ```r
 #Put (report) these values into a sentence when I do the RMarkdown
@@ -164,7 +165,7 @@ activity_by_interval<-aggregate(activity["steps"], by=activity["interval"], FUN=
 plot(as.integer(activity_by_interval$interval), activity_by_interval$steps, type="l", ylab="Number of steps", xlab="Interval", main="Avg activity pattern")
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
 
 ```r
 head(activity_by_interval)
@@ -243,7 +244,7 @@ replaced_data_activity_by_day<-aggregate(replaced_data["steps"], by=replaced_dat
 hist(replaced_data_activity_by_day$steps, main=paste("Histogram of Numer of Steps/day (missing values replaced)"), xlab="Number of steps per day", ylab="Frequency of steps")
 ```
 
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
 
 
 ```r
