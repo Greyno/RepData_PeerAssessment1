@@ -258,54 +258,28 @@ data_by_days<-replaced_data_activity_by_day
 Now split the data into week days and weekend days
 
 ```r
-weekend_data <- subset(test, weekday %in% c("Saturday","Sunday"))
-```
-
-```
-## Error in subset(test, weekday %in% c("Saturday", "Sunday")): object 'test' not found
-```
-
-```r
-weekday_data <- subset(test, !weekday %in% c("Saturday","Sunday"))
-```
-
-```
-## Error in subset(test, !weekday %in% c("Saturday", "Sunday")): object 'test' not found
-```
-
-```r
+weekend_data <- subset(data_by_days, weekday %in% c("Saturday","Sunday"))
+weekday_data <- subset(data_by_days, !weekday %in% c("Saturday","Sunday"))
 #Replace "Sat" and "Sun" with "weekend"
 weekend_data$weekday <- ifelse(weekend_data$weekday > "Friday","weekend", "")
-```
-
-```
-## Error in ifelse(weekend_data$weekday > "Friday", "weekend", ""): object 'weekend_data' not found
-```
-
-```r
 #Replace "Mon" etc with "weekday"
 weekday_data$weekday <- ifelse(weekday_data$weekday >="Monday","weekday", "weekday")
-```
-
-```
-## Error in ifelse(weekday_data$weekday >= "Monday", "weekday", "weekday"): object 'weekday_data' not found
 ```
 Recombine the weekend and weekday data using 'rbind' (this appends weekdays to the end of the file) 
 
 ```r
 data_by_days_final<-rbind(weekend_data, weekday_data)
-```
-
-```
-## Error in rbind(weekend_data, weekday_data): object 'weekend_data' not found
-```
-
-```r
 head(data_by_days_final)
 ```
 
 ```
-## Error in head(data_by_days_final): object 'data_by_days_final' not found
+##          date steps weekday
+## 6  2012-10-06 15420 weekend
+## 7  2012-10-07 11015 weekend
+## 13 2012-10-13 12426 weekend
+## 14 2012-10-14 15098 weekend
+## 20 2012-10-20 10395 weekend
+## 21 2012-10-21  8821 weekend
 ```
 Plot the final dataset by weekend and weekday
 
@@ -313,8 +287,6 @@ Plot the final dataset by weekend and weekday
 ggplot(data_by_days_final, aes(x=date, y=steps)) + geom_line(color="black") + facet_wrap(~ weekday, nrow=2, ncol=1) + labs(x="Interval", y="Number of steps") + theme_bw()
 ```
 
-```
-## Error in ggplot(data_by_days_final, aes(x = date, y = steps)): object 'data_by_days_final' not found
-```
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png) 
 
 Overall, the number of steps taken during the weekday is generally at a higher level than the number of steps taken during the weekend.

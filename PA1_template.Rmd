@@ -109,8 +109,8 @@ data_by_days<-replaced_data_activity_by_day
 ```
 Now split the data into week days and weekend days
 ```{r, echo=TRUE}
-weekend_data <- subset(test, weekday %in% c("Saturday","Sunday"))
-weekday_data <- subset(test, !weekday %in% c("Saturday","Sunday"))
+weekend_data <- subset(data_by_days, weekday %in% c("Saturday","Sunday"))
+weekday_data <- subset(data_by_days, !weekday %in% c("Saturday","Sunday"))
 #Replace "Sat" and "Sun" with "weekend"
 weekend_data$weekday <- ifelse(weekend_data$weekday > "Friday","weekend", "")
 #Replace "Mon" etc with "weekday"
