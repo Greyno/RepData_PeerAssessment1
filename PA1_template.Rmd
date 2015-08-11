@@ -43,10 +43,9 @@ summary(activity_by_day) #Min 41 steps, max 21194 steps, 8 NAs
 Create a histogram (using the graphics package) of the total number of steps taken each day. Look at a histogram of the frequency by steps. Calculate the mean and the median of the number of steps/day (ignoring the NA values). 
 ```{r, echo=TRUE}
 hist(activity_by_day$steps, main=paste("Histogram of Numer of Steps/day (NA values removed)"), xlab="Number of steps per day", ylab="Frequency of steps")
-#Put (report) these values into a sentence when I do the RMarkdown
-#mean (NAs removed):10766.19
+#mean (with NAs removed):10766.19
 mean_steps<-format(round(mean_steps<-mean(activity_by_day$steps, na.rm=TRUE)), scientific=FALSE) 
-#median (NAs removed):10765
+#median (with NAs removed):10765
 median_steps<-format(round(median(activity_by_day$steps, na.rm=TRUE)), scientific=FALSE)
 ```
 The mean number of steps is `r mean_steps` and the median number of steps is `r median_steps`.
@@ -62,7 +61,7 @@ head(activity_by_interval)
 ```{r, echo=TRUE}
 max_step <- round(max(activity_by_interval$steps), digits=2) #The max step is 206
 max_interval <-round(which.max(activity_by_interval$steps))
-head(max_interval) #The max steps occurs at the 104th interval value (need to convert back to time interval)
+head(max_interval) #The max steps occurs at the 104th interval value
 ```
 On average, across all the days in the dataset, the 5-minute interval that contains the maximum number of steps (`r max_step`) occurs at interval `r max_interval` of the data.
 

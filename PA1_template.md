@@ -140,10 +140,9 @@ hist(activity_by_day$steps, main=paste("Histogram of Numer of Steps/day (NA valu
 ![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 ```r
-#Put (report) these values into a sentence when I do the RMarkdown
-#mean (NAs removed):10766.19
+#mean (with NAs removed):10766.19
 mean_steps<-format(round(mean_steps<-mean(activity_by_day$steps, na.rm=TRUE)), scientific=FALSE) 
-#median (NAs removed):10765
+#median (with NAs removed):10765
 median_steps<-format(round(median(activity_by_day$steps, na.rm=TRUE)), scientific=FALSE)
 ```
 The mean number of steps is 10766 and the median number of steps is 10765.
@@ -176,7 +175,7 @@ head(activity_by_interval)
 ```r
 max_step <- round(max(activity_by_interval$steps), digits=2) #The max step is 206
 max_interval <-round(which.max(activity_by_interval$steps))
-head(max_interval) #The max steps occurs at the 104th interval value (need to convert back to time interval)
+head(max_interval) #The max steps occurs at the 104th interval value
 ```
 
 ```
